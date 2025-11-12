@@ -8,20 +8,20 @@ class GitAutoUploader(FileSystemEventHandler):
     def __init__(self, repo_path):
         self.repo_path = repo_path
 
-    def on_modified(self, event):
-        if event.is_directory:
-            return
-        print(f"File modified: {event.src_path}")
-        self.commit_and_push()
-
-    def on_created(self, event):
-        if event.is_directory:
-            return
-        print(f"File created: {event.src_path}")
+    def on_any_event(self, event):
+        if event.is_directory and ".git" in event.src_path:
+            return  # Ignore .git directory events
+        print(f"File changed: {event.src_path}")
         self.commit_and_push()
 
     def commit_and_push(self):
         try:
+            # Check for changes before committing
+            result = subprocess.run(["git", "status", "--porcelain"], cwd=self.repo_path, capture_output=True, text=True, check=True)
+            if not result.stdout.strip():
+                print("No changes to commit.")
+                return
+
             subprocess.run(["git", "add", "-A"], cwd=self.repo_path, check=True)
             subprocess.run(["git", "commit", "-m", "Auto-commit changes"], cwd=self.repo_path, check=True)
             subprocess.run(["git", "push"], cwd=self.repo_path, check=True)
