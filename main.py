@@ -4,6 +4,9 @@ except ImportError:
     from types import SimpleNamespace
     from typing import TYPE_CHECKING
 
+
+
+
     if TYPE_CHECKING:  # pragma: no cover - keep module type info for editors
         import machine as machine  # type: ignore  # noqa: F401
     else:
