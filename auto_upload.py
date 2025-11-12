@@ -9,8 +9,8 @@ class GitAutoUploader(FileSystemEventHandler):
         self.repo_path = repo_path
 
     def on_any_event(self, event):
-        if event.is_directory and ".git" in event.src_path:
-            return  # Ignore .git directory events
+        if ".git" in event.src_path:
+            return  # Completely ignore .git directory events
         print(f"File changed: {event.src_path}")
         self.commit_and_push()
 
