@@ -12,6 +12,10 @@ class I2cLcd(LcdApi):
         self._init_lcd()
         super().__init__()
 
+    def set_backlight(self, on: bool) -> None:
+        """Turn the LCD backlight on or off (if supported by backpack)."""
+        self.backlight = 0x08 if on else 0x00
+
     def _init_lcd(self):
         utime.sleep_ms(20)
         self._write_byte(0x30)
